@@ -146,15 +146,21 @@ namespace Monetizr.Campaigns
 
             rewardAmount.text = m.reward.ToString();
 
+            string rewardNumber = $"{m.reward} ";
+
+            if (m.reward == 1)
+                rewardNumber = "";
+
             title.text = $"Congrats!";
-            text.text = $"You earn <color=#F05627>{m.reward} {rewardTitle}</color> from {m.brandName}";
+            text.text = $"You earn <color=#F05627>{rewardNumber}{rewardTitle}</color> from {m.brandName}";
 
             //buttonText.text = "Learn More";
             buttonText.text = "Awesome!";
 
             rewardImage.gameObject.SetActive(true);
-            rewardImageBackgroud.gameObject.SetActive(true);
-            rewardAmount.gameObject.SetActive(true);
+
+            rewardImageBackgroud.gameObject.SetActive(m.reward != 1);
+            rewardAmount.gameObject.SetActive(m.reward != 1);
 
             rewardImage.sprite = rewardIcon;
 
@@ -237,7 +243,7 @@ namespace Monetizr.Campaigns
             if (m.reward == 1)
                 rewardNumber = "";
 
-            text.text = $"<color=#F05627>Follow {m.brandName} Twitter</color>\nto earn <color=#F05627>{rewardNumber}{rewardTitle}</color>";
+            text.text = $"Follow <color=#F05627>{m.brandName} Twitter</color>\nto earn <color=#F05627>{rewardNumber}{rewardTitle}</color>";
             
 
             //buttonText.text = "Learn More";
@@ -246,11 +252,9 @@ namespace Monetizr.Campaigns
 
             rewardImage.gameObject.SetActive(true);
 
-            if (m.reward == 1)
-            {
-                rewardImageBackgroud.gameObject.SetActive(m.reward != 1);
-                rewardAmount.gameObject.SetActive(m.reward != 1);
-            }
+            rewardImageBackgroud.gameObject.SetActive(m.reward != 1);
+            rewardAmount.gameObject.SetActive(m.reward != 1);
+            
 
             Sprite rewardIcon = MonetizrManager.gameRewards[m.rewardType].icon;
 
