@@ -357,7 +357,7 @@ namespace Monetizr.Campaigns
 
         //TODO: add defines
 
-        internal void createEmbedMissions()
+        public void initializeBuiltinMissions()
         {
             if(isMissionsIsOudated)
                 missionsManager.AddMissionsToCampaigns();
@@ -727,12 +727,16 @@ namespace Monetizr.Campaigns
 
             var m = instance.missionsManager.GetMission(challengeId);
 
+            if (m == null)
+                return;
+
             if (Instance.missionsManager.missions.Count == 1)
             {
                 Instance._PressSingleMission(m);
                 return;
             }
-                        
+            
+            
 
             Log.Print($"ShowRewardCenter with {m?.campaignId}");
 
@@ -836,7 +840,7 @@ namespace Monetizr.Campaigns
 
             tinyTeaserCanBeVisible = true;
 
-            instance.createEmbedMissions();
+            instance.initializeBuiltinMissions();
 
             //has some challanges
             if (!instance.HasChallengesAndActive())

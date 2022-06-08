@@ -11,10 +11,12 @@ public class MonetizrSample : MonoBehaviour
     void Start()
     {
         MonetizrManager.Initialize("N3KA74389AG670040673EFG92L9S7X", () => 
-                {   
-                    //if we want to show teaser on the screen
-                    MonetizrManager.ShowTinyMenuTeaser();
-                                        
+                {
+                    //MonetizrManager.ShowTinyMenuTeaser();
+
+                    //if we want we don't want to show teaser on the screen, we must call createEmbedMissions 
+                    MonetizrManager.Instance.initializeBuiltinMissions();
+
                     StartCoroutine(ShowOffer());
                 }, null);
 
