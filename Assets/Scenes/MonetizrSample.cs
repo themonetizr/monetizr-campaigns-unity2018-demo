@@ -5,16 +5,20 @@ using UnityEngine;
 
 public class MonetizrSample : MonoBehaviour
 {
+    //reward icon (coin, gem, whatever)
     public Sprite defaultRewardIcon;
 
-    // Start is called before the first frame update
     void Start()
     {
+        //initilization should be done before calling everything
+        //please keep in mind, that it will start downloading resources in the background and
+        //it will take sometime
         MonetizrManager.Initialize("N3KA74389AG670040673EFG92L9S7X", () => 
                 {
+                    //Show small banner
                     //MonetizrManager.ShowTinyMenuTeaser();
 
-                    //if we want we don't want to show teaser on the screen, we must call createEmbedMissions 
+                    //if we want we don't want to show teaser on the screen, we must call initializeBuiltinMissions 
                     MonetizrManager.Instance.initializeBuiltinMissions();
 
                     StartCoroutine(ShowOffer());
@@ -22,23 +26,28 @@ public class MonetizrSample : MonoBehaviour
 
         MonetizrManager.SetTeaserPosition(new Vector2(-420, 270));
 
-        MonetizrManager.SetGameCoinAsset(RewardType.Coins, defaultRewardIcon, "Snail Costume", () =>
+        MonetizrManager.SetGameCoinAsset(RewardType.Coins, defaultRewardIcon, "King Suit", () =>
                 {
+                    //here we should return amount of item that player already have
                     return 0;// GameController.I.GetCoinsTotal();
                 },
                 (int reward) =>
                 {
+                    //here we should specify how we can give reward to player
                     //GameController.I.AddCoinsTotal(reward);
                 });
 
+        //How much of game currency we will get
         MonetizrManager.defaultRewardAmount = 1;
+
+        //Game twitter link
         MonetizrManager.defaultTwitterLink = "https://twitter.com/omegaxrunner";
     }
 
     //show notifications manually
     IEnumerator ShowOffer()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(1);
 
         MonetizrManager.ShowRewardCenter(null);
     }

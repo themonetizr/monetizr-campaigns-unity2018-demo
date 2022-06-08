@@ -342,7 +342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0a598e88780a504882cb0ea3ea5bcaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultRewardIcon: {fileID: 21300000, guid: 389d65d8c1cab114d9ac27d34b7c0509, type: 3}
+  defaultRewardIcon: {fileID: 21300000, guid: 0dbb90426442d464b9f7c820208c3c7e, type: 3}
 --- !u!1 &1634187974
 GameObject:
   m_ObjectHideFlags: 0

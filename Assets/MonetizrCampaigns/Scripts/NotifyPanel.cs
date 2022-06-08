@@ -18,6 +18,9 @@ namespace Monetizr.Campaigns
         public Image logo;
         public Button closeButton;
         public Text buttonText;
+        public Button noThanksButton;
+
+        [HideInInspector]
         public Mission currentMission;
 
         //private Action onComplete;
@@ -29,6 +32,7 @@ namespace Monetizr.Campaigns
             this.currentMission = m;
 
             closeButton.onClick.AddListener(OnButtonPress);
+            noThanksButton.onClick.AddListener(OnNoThanksPress);
 
             switch (id)
             {
@@ -228,14 +232,25 @@ namespace Monetizr.Campaigns
                 rewardTitle = MonetizrManager.Instance.GetAsset<string>(challengeId, AssetsType.CustomCoinString);
             }
 
-            text.text = $"<color=#F05627>Follow {m.brandName} Twitter</color>\nto earn <color=#F05627>{m.reward} {rewardTitle}</color>";
+            string rewardNumber = $"{m.reward} ";
+
+            if (m.reward == 1)
+                rewardNumber = "";
+
+            text.text = $"<color=#F05627>Follow {m.brandName} Twitter</color>\nto earn <color=#F05627>{rewardNumber}{rewardTitle}</color>";
+            
 
             //buttonText.text = "Learn More";
-            buttonText.text = "Awesome!";
+            buttonText.text = "Go to Twitter";
+
 
             rewardImage.gameObject.SetActive(true);
-            rewardImageBackgroud.gameObject.SetActive(true);
-            rewardAmount.gameObject.SetActive(true);
+
+            if (m.reward == 1)
+            {
+                rewardImageBackgroud.gameObject.SetActive(m.reward != 1);
+                rewardAmount.gameObject.SetActive(m.reward != 1);
+            }
 
             Sprite rewardIcon = MonetizrManager.gameRewards[m.rewardType].icon;
 
@@ -260,8 +275,15 @@ namespace Monetizr.Campaigns
 
         }
 
+        public void OnNoThanksPress()
+        {
+            isSkipped = true;
+            SetActive(false);
+        }
+
         public void OnButtonPress()
         {
+            isSkipped = false;
             SetActive(false);
         }
 

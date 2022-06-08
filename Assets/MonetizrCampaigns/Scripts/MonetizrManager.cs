@@ -769,13 +769,20 @@ namespace Monetizr.Campaigns
 
 
             if (m.isClaimed == ClaimState.NotClaimed)
-            {
-                m.isClaimed = ClaimState.CompletedNotClaimed;
-                missionsManager.SaveAll();
+            {                
+                ShowNotification((bool isSkipped) => 
+                    {
+                        if (!isSkipped)
+                        {
+                            m.isClaimed = ClaimState.CompletedNotClaimed;
+                            missionsManager.SaveAll();
 
-                ShowNotification((bool _) => { MonetizrManager.GoToLink(onTaskComplete, m); },
-                            m,
-                            PanelId.TwitterNotification);
+                            MonetizrManager.GoToLink(onTaskComplete, m);
+                        }
+                    },
+                    
+                    m,
+                    PanelId.TwitterNotification);
             }
             else
             {
