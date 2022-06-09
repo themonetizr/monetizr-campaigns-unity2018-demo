@@ -187,14 +187,21 @@ namespace Monetizr.Campaigns
         public static bool limitAdvertising = false;
         internal static DeviceSizeGroup deviceSizeGroup = DeviceSizeGroup.Unknown;
 
+        public static readonly Dictionary<DeviceSizeGroup, string> deviceSizeGroupNames = new Dictionary<DeviceSizeGroup, string>()
+        {
+            { DeviceSizeGroup.Phone, "phone" },
+            { DeviceSizeGroup.Tablet, "tablet" },
+            { DeviceSizeGroup.Unknown, "unknown" },
+        };
+
         //        private Dictionary<string, ChallengeTimes> challengesWithTimes = new Dictionary<string, ChallengeTimes>();
 
-        //        private const int SECONDS_IN_DAY = 24 * 60 * 60;
+            //        private const int SECONDS_IN_DAY = 24 * 60 * 60;
 
 
-        //private Dictionary<AdType,VisibleAdAsset> visibleAdAsset = new Dictionary<AdType, VisibleAdAsset>();
+            //private Dictionary<AdType,VisibleAdAsset> visibleAdAsset = new Dictionary<AdType, VisibleAdAsset>();
 
-        //AdType and ChallengeId
+            //AdType and ChallengeId
         private Dictionary<KeyValuePair<AdType, string>, VisibleAdAsset> visibleAdAsset = new Dictionary<KeyValuePair<AdType, string>, VisibleAdAsset>();
 
 #if USING_AMPLITUDE
@@ -556,6 +563,7 @@ namespace Monetizr.Campaigns
             props["brand_name"] = brandName;
             props["type"] = adTypeNames[adAsset.Key];
             props["ab_segment"] = MonetizrManager.abTestSegment;
+            props["device_size"] = deviceSizeGroupNames[deviceSizeGroup];
             //props["duration"] = (DateTime.Now - visibleAdAsset[type].activateTime).TotalSeconds;
 
             string eventName = $"[UNITY_SDK] [AD] {adTypeNames[adAsset.Key]}";
@@ -596,6 +604,8 @@ namespace Monetizr.Campaigns
 
         public void TrackEvent(string name, string campaign)
         {
+            Log.Print($"TrackEvent: {name} {campaign}");
+
             var eventName = $"[UNITY_SDK] {name}";
 
             string campaign_id = "none";
@@ -624,8 +634,6 @@ namespace Monetizr.Campaigns
             //}
 
 
-            
-
             var props = new Value();
             props["application_id"] = app_id;
             props["bundle_id"] = Application.identifier;
@@ -637,6 +645,7 @@ namespace Monetizr.Campaigns
             props["brand_id"] = brand_id;
             props["brand_name"] = brand_name;
             props["ab_segment"] = MonetizrManager.abTestSegment;
+            props["device_size"] = deviceSizeGroupNames[deviceSizeGroup];
 
             Mixpanel.Track(eventName, props);
 
@@ -650,63 +659,6 @@ namespace Monetizr.Campaigns
             amplitude.logEvent(eventName, eventProps);
 #endif
         }
-
-        /*
-         public void TrackEvent(string name, string campaign)
-        {
-            var eventName = $"[UNITY_SDK] {name}";
-
-            string campaign_id = "none";
-            string brand_id = "none";
-            string app_id = "none";
-            string brand_name = "none";
-
-            if (campaign == null)
-            {
-                Log.Print($"MonetizrAnalytics TrackEvent: MissionUIDescription shouldn't be null");
-                return;
-            }
-
-            var challenge = MonetizrManager.Instance.GetChallenge(campaign);
-
-
-            //if (currentMissionDesc != null)
-            //{
-            var ch = currentMissionDesc.campaignId;
-                brand_id = currentMissionDesc.brandId;// MonetizrManager.Instance.GetChallenge(ch).brand_id;
-                app_id = currentMissionDesc.appId;// MonetizrManager.Instance.GetChallenge(ch).application_id;
-                brand_name = currentMissionDesc.brandName;// MonetizrManager.Instance.GetAsset<string>(ch, AssetsType.BrandTitleString);
-                campaign_id = ch;
-            //}
-
-
-            
-
-            var props = new Value();
-            props["application_id"] = app_id;
-            props["bundle_id"] = Application.identifier;
-            props["player_id"] = SystemInfo.deviceUniqueIdentifier;
-            props["application_name"] = Application.productName;
-            props["application_version"] = Application.version;
-            //props["campaign_id"] = campaign_id;
-            props["camp_id"] = campaign_id;
-            props["brand_id"] = brand_id;
-            props["brand_name"] = brand_name;
-            props["ab_segment"] = MonetizrManager.abTestSegment;
-
-            Mixpanel.Track(eventName, props);
-
-#if USING_AMPLITUDE
-            Dictionary<string, object> eventProps = new Dictionary<string, object>();
-            eventProps.Add("camp_id", campaign_id);
-            eventProps.Add("brand_id", brand_id);
-            eventProps.Add("brand_name", brand_name);
-            eventProps.Add("ab_segment", MonetizrManager.abTestSegment);
-     
-            amplitude.logEvent(eventName, eventProps);
-#endif
-        }
-         */
 
         public void OnApplicationQuit()
         {
@@ -717,91 +669,7 @@ namespace Monetizr.Campaigns
 
             Mixpanel.Flush();
         }
-
-        /// <summary>
-        /// Updates <see cref="challengesWithTimes"/> with <paramref name="challenges"/>. 
-        /// If a challenge has already been registered in a previous Update, its times will remain unchanged.
-        /// If a challenge no longer exists in <paramref name="challenges"/> it will be removed.
-        /// </summary>
-        //public void Update(List<Challenge> challenges)
-        //{
-        //    Dictionary<string, ChallengeTimes> updatedChallengesWithTimes = new Dictionary<string, ChallengeTimes>();
-
-        //    foreach (Challenge challenge in challenges)
-        //    {
-        //        if (challengesWithTimes.ContainsKey(challenge.id))
-        //        {
-        //            updatedChallengesWithTimes.Add(challenge.id, challengesWithTimes[challenge.id]);
-        //        }
-        //        else
-        //        {
-        //            int currentTime = Mathf.FloorToInt(Time.realtimeSinceStartup);
-        //            updatedChallengesWithTimes.Add(challenge.id, new ChallengeTimes(currentTime, currentTime));
-        //        }
-        //    }
-
-        //    challengesWithTimes = new Dictionary<string, ChallengeTimes>(updatedChallengesWithTimes);
-        //}
-
-        /// <summary>
-        /// Returns time in seconds between now and time when <paramref name="challenge"/> first appeared in <see cref="Update(List{Challenge})"/>
-        /// </summary>
-        //public int GetElapsedTime(Challenge challenge)
-        //{
-        //    if (!challengesWithTimes.ContainsKey(challenge.id))
-        //    {
-        //        Log.PrintError("Challenge: " + challenge.title + " was not added to analytics");
-        //        return -1;
-        //    }
-
-        //    return Mathf.FloorToInt(Time.realtimeSinceStartup) - challengesWithTimes[challenge.id].firstSeenTime;
-        //}
-
-        /// <summary>
-        /// Returns time in seconds between now and last time <paramref name="challenge"/> status update was marked.
-        /// </summary>
-        //public int GetTimeSinceLastUpdate(Challenge challenge)
-        //{
-        //    if (!challengesWithTimes.ContainsKey(challenge.id))
-        //    {
-        //        Log.PrintError("Challenge: " + challenge.title + " was not added to analytics");
-        //        return -1;
-        //    }
-
-        //    return Mathf.FloorToInt(Time.realtimeSinceStartup) - challengesWithTimes[challenge.id].lastUpdateTime;
-        //}
-
-        /// <summary>
-        /// Sets last update time for <paramref name="challenge"/> to current time.
-        /// If time since last update exceeds 24h, resets first time seen to 0.
-        /// </summary>
-        //public void MarkChallengeStatusUpdate(Challenge challenge)
-        //{
-        //    if (!challengesWithTimes.ContainsKey(challenge.id))
-        //    {
-        //        Log.PrintError("Challenge: " + challenge.title + " was not added to analytics");
-        //        return;
-        //    }
-
-        //    if (GetTimeSinceLastUpdate(challenge) > SECONDS_IN_DAY)
-        //    {
-        //        challengesWithTimes[challenge.id].firstSeenTime = Mathf.FloorToInt(Time.realtimeSinceStartup);
-        //    }
-
-        //    challengesWithTimes[challenge.id].lastUpdateTime = Mathf.FloorToInt(Time.realtimeSinceStartup);
-        //}
-
-        //private class ChallengeTimes
-        //{
-        //    public ChallengeTimes(int firstSeenTime, int lastUpdateTime)
-        //    {
-        //        this.firstSeenTime = firstSeenTime;
-        //        this.lastUpdateTime = lastUpdateTime;
-        //    }
-
-        //    public int firstSeenTime;
-        //    public int lastUpdateTime;
-        //}
+        
     }
 
 

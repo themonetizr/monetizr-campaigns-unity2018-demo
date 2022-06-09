@@ -267,8 +267,8 @@ namespace Monetizr.Campaigns
             claimForSkippedCampaigns = true;
 #else
             keepLocalClaimData = true;
-            serverClaimForCampaigns = false;
-            claimForSkippedCampaigns = true;
+            serverClaimForCampaigns = true;
+            claimForSkippedCampaigns = false;
 #endif
                        
 
@@ -759,6 +759,8 @@ namespace Monetizr.Campaigns
 
             Action<bool> onTaskComplete = (bool isSkipped) =>
             {
+                MonetizrManager.Analytics.TrackEvent("Campaign rewarded", m);
+
                 m.isClaimed = ClaimState.Claimed;
                 missionsManager.SaveAll();
 
@@ -769,13 +771,17 @@ namespace Monetizr.Campaigns
 
 
             if (m.isClaimed == ClaimState.NotClaimed)
-            {                
+            {
+                MonetizrManager.Analytics.TrackEvent("Campaign shown", m);
+
                 ShowNotification((bool isSkipped) => 
                     {
                         if (!isSkipped)
                         {
                             m.isClaimed = ClaimState.CompletedNotClaimed;
                             missionsManager.SaveAll();
+
+                            MonetizrManager.Analytics.TrackEvent("Campaign claimed", m);
 
                             MonetizrManager.GoToLink(onTaskComplete, m);
                         }
@@ -804,7 +810,7 @@ namespace Monetizr.Campaigns
 
         internal static void GoToLink(Action<bool> onComplete, Mission m = null)
         {
-            Application.OpenURL(defaultTwitterLink);
+            Application.OpenURL(m.surveyUrl);
             onComplete.Invoke(false);
         }
 

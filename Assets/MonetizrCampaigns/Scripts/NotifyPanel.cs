@@ -32,7 +32,7 @@ namespace Monetizr.Campaigns
             this.currentMission = m;
 
             closeButton.onClick.AddListener(OnButtonPress);
-            noThanksButton.onClick.AddListener(OnNoThanksPress);
+            noThanksButton?.onClick.AddListener(OnNoThanksPress);
 
             switch (id)
             {
@@ -104,6 +104,7 @@ namespace Monetizr.Campaigns
             rewardImage.gameObject.SetActive(false);
             rewardAmount.gameObject.SetActive(false);
             rewardImageBackgroud.gameObject.SetActive(false);
+            noThanksButton?.gameObject.SetActive(false);
 
             rewardImage.sprite = rewardIcon;
 
@@ -162,6 +163,8 @@ namespace Monetizr.Campaigns
             rewardImageBackgroud.gameObject.SetActive(m.reward != 1);
             rewardAmount.gameObject.SetActive(m.reward != 1);
 
+            noThanksButton?.gameObject.SetActive(false);
+
             rewardImage.sprite = rewardIcon;
 
 
@@ -197,6 +200,7 @@ namespace Monetizr.Campaigns
             rewardImage.gameObject.SetActive(true);
             rewardImageBackgroud.gameObject.SetActive(true);
             rewardAmount.gameObject.SetActive(true);
+            noThanksButton?.gameObject.SetActive(false);
 
             Sprite rewardIcon = MonetizrManager.gameRewards[m.rewardType].icon;
 
@@ -281,12 +285,16 @@ namespace Monetizr.Campaigns
 
         public void OnNoThanksPress()
         {
+            MonetizrManager.Analytics.TrackEvent("Twitter cancel", currentMission);
+
             isSkipped = true;
             SetActive(false);
         }
 
         public void OnButtonPress()
         {
+            MonetizrManager.Analytics.TrackEvent("Twitter follow", currentMission);
+
             isSkipped = false;
             SetActive(false);
         }
