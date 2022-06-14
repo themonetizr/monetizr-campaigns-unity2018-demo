@@ -101,7 +101,7 @@ namespace Monetizr.Campaigns
 
         internal bool IsAllMissionsClaimed()
         {
-            return missions?.Find((Mission m) => { return m.isClaimed == ClaimState.Claimed; }) == null;
+            return missions?.Find((Mission m) => { return m.isClaimed != ClaimState.Claimed; }) == null;
         }
 
         internal bool CheckFullCampaignClaim(Mission _m)

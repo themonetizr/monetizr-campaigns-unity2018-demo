@@ -18,13 +18,14 @@ public class MonetizrSample : MonoBehaviour
                     //Show small banner
                     //MonetizrManager.ShowTinyMenuTeaser();
 
-                    if(MonetizrManager.Instance.missionsManager.IsAllMissionsClaimed())
-                    {
-                        Debug.LogWarning("No active campaings");
-                    }
 
                     //if we want we don't want to show teaser on the screen, we must call initializeBuiltinMissions 
                     MonetizrManager.Instance.initializeBuiltinMissions();
+
+                    if (MonetizrManager.Instance.missionsManager.IsAllMissionsClaimed())
+                    {
+                        Debug.LogWarning("No active campaings");
+                    }
 
                     StartCoroutine(ShowOffer());
                 }, null);
