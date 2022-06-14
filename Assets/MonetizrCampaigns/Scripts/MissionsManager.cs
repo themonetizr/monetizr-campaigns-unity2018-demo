@@ -99,6 +99,11 @@ namespace Monetizr.Campaigns
             return null;
         }
 
+        internal bool IsAllMissionsClaimed()
+        {
+            return missions?.Find((Mission m) => { return m.isClaimed == ClaimState.Claimed; }) == null;
+        }
+
         internal bool CheckFullCampaignClaim(Mission _m)
         {
             foreach (var m in missions)

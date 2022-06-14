@@ -14,9 +14,14 @@ public class MonetizrSample : MonoBehaviour
         //please keep in mind, that it will start downloading resources in the background and
         //it will take sometime
         MonetizrManager.Initialize("N3KA74389AG670040673EFG92L9S7X", () => 
-                {
+                {       
                     //Show small banner
                     //MonetizrManager.ShowTinyMenuTeaser();
+
+                    if(MonetizrManager.Instance.missionsManager.IsAllMissionsClaimed())
+                    {
+                        Debug.LogWarning("No active campaings");
+                    }
 
                     //if we want we don't want to show teaser on the screen, we must call initializeBuiltinMissions 
                     MonetizrManager.Instance.initializeBuiltinMissions();
